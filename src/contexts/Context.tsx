@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState } from 'react';
+import { IUser } from '../types/IUser';
 
 import { LoginResult } from "./LoginResult";
 
@@ -8,6 +9,10 @@ export interface IUserContext {
     jwt?: string;
     signIn: (email: string, password: string) => Promise<LoginResult>;
     signOut: () => void;
+}
+
+export interface IProviderProps {
+    children: React.ReactNode;
 }
 
 const UserContext = createContext<IUserContext | null>(null);
