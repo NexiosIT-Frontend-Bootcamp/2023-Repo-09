@@ -10,10 +10,14 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { useUserContext } from '../../contexts/Context';
 
 const defaultTheme = createTheme();
 
 export default function SignIn() {
+
+  const { signIn } = useUserContext();
+
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -22,20 +26,9 @@ export default function SignIn() {
       password: data.get('password'),
     });
 
-    // POST request for login
-    const requestOptions = {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-            email: data.get('email'),
-            password: data.get('password'),
-        })
-    };
-  
-    fetch('https://lobster-app-osqfh.ondigitalocean.app/auth/login', requestOptions)
-        .then(response => response.json())
-        .then(response => console.log(response));
+    // Call the signIn function from the UserContext
 
+    signIn(data.get('email') as string, data.get('password') as string);
   };
 
   return (

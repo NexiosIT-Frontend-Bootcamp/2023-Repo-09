@@ -5,6 +5,7 @@ import { LoginResult } from "./LoginResult";
 
 export interface IUserContext {
     loading: boolean;
+    error?: string;
     user?: IUser;
     jwt?: string;
     signIn: (email: string, password: string) => Promise<LoginResult>;
@@ -23,6 +24,20 @@ export const UserContextProvider = ({ children }: IProviderProps) => {
     const [jwt, setJwt] = useState<string>();
 
     const signIn = async (email: string, password: string): Promise<LoginResult> => {
+        console.log("signIn");
+        // POST request for login
+        const requestOptions = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                email: email,
+                password: password,
+            })
+        };
+    
+        fetch('https://lobster-app-osqfh.ondigitalocean.app/auth/login', requestOptions)
+            .then(response => response.json())
+            .then(response => console.log(response));
         return { success: true };
     };
 
