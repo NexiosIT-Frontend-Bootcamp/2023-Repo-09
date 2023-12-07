@@ -50,7 +50,7 @@ const Home: React.FC = () => {
 	return (
 	<ThemeProvider theme={defaultTheme}>
 	<Container component="main" >
-  <div style={{ display: 'flex', height: '100vh' }}>
+    <div style={{ display: 'flex', height: '100vh' }}>
       {/* Sidebar */}
       <div style={{ width: '200px', padding: '20px', backgroundColor: '#f0f0f0', position: 'fixed', left: 0, top: 0, bottom: 0 }}>
         <Typography variant="h6" style={{ marginBottom: '20px' }}>
@@ -75,21 +75,21 @@ const Home: React.FC = () => {
           ))}
         </div>
     
-    <div style={{position: 'fixed', bottom: 0, left: 10, width: '100%', padding: '10px', backgroundColor: '#fff' }}>
-      <form onSubmit={(e) => { e.preventDefault(); handleChange(inputValue); }}>
+        <div style={{position: 'fixed', bottom: 0, left: 10, width: '100%', padding: '10px', backgroundColor: '#fff' }}>
+          <form onSubmit={(e) => { e.preventDefault(); handleChange(inputValue); }}>
 
-        <TextField
-          value={inputValue}
-          onChange={(e) => setInputValue(e.target.value)}
-          fullWidth id="fullWidth"
-          style={{maxWidth: '600px'}}
-        />
-      <IconButton color="primary" onClick={() => { handleChange(inputValue)}} aria-label="send message">
-        <SendRounded style={{maxWidth: '30px', maxHeight: '30px', minWidth: '30px', minHeight: '30px'}} />
-      </IconButton>
-      </form>
-    </div>
-    </div>
+            <TextField
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+              fullWidth id="fullWidth"
+              style={{maxWidth: '600px'}}
+            />
+          <IconButton color="primary" onClick={() => { handleChange(inputValue)}} aria-label="send message">
+            <SendRounded style={{maxWidth: '30px', maxHeight: '30px', minWidth: '30px', minHeight: '30px'}} />
+          </IconButton>
+          </form>
+        </div>
+      </div>
     </div>
 	</Container>
 	</ThemeProvider>
