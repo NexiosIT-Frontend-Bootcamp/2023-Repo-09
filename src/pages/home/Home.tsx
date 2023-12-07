@@ -10,6 +10,10 @@ const defaultTheme = createTheme();
 const Home: React.FC = () => {
 
     const { jwt } = useUserContext();
+	const messages: {id:number, text:string}[] = [
+		{ id: 1, text: 'Hello there!' },
+		{ id: 2, text: 'How are you?' },
+		{ id: 3, text: 'This is a test message.' }];
 
     const [users, setUsers] = useState<IUser[]>([]);
     const [usersLoading, setUsersLoading] = useState<boolean>();
