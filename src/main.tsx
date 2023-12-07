@@ -4,7 +4,7 @@ import App from './App.tsx'
 import './index.css'
 import { ThemeProvider } from '@emotion/react'
 import { createTheme } from '@mui/material'
-import { UserContextProvider } from './contexts/Context.tsx'
+import { UserContextProvider } from './contexts/UserContext.tsx'
 
 
 const theme = createTheme();

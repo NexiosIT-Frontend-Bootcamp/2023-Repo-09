@@ -1,5 +1,5 @@
 import { Navigate, Outlet, useLocation } from "react-router-dom";
-import { useUserContext } from "../contexts/Context";
+import { useUserContext } from "../contexts/UserContext";
 
 interface IProps {
     expectAuth?: boolean;
