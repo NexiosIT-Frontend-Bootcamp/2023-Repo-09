@@ -10,10 +10,6 @@ const defaultTheme = createTheme();
 const Home: React.FC = () => {
 
     const { jwt } = useUserContext();
-	const messages: {id:number, text:string}[] = [
-		{ id: 1, text: 'Hello there!' },
-		{ id: 2, text: 'How are you?' },
-		{ id: 3, text: 'This is a test message.' }];
 
     const [users, setUsers] = useState<IUser[]>([]);
     const [usersLoading, setUsersLoading] = useState<boolean>();
@@ -80,17 +76,19 @@ const Home: React.FC = () => {
         </div>
     
     <div style={{position: 'fixed', bottom: 0, left: 10, width: '100%', padding: '10px', backgroundColor: '#fff' }}>
-      <TextField
-        value={inputValue}
-        label={`Bottom Text Box`}
-        onChange={(e) => setInputValue(e.target.value)}
-        fullWidth id="fullWidth"
-        style={{maxWidth: '600px'}}
-      />
-		<IconButton color="primary" onClick={() => { handleChange(inputValue)}} aria-label="send message">
-			<SendRounded style={{maxWidth: '30px', maxHeight: '30px', minWidth: '30px', minHeight: '30px'}} />
-		</IconButton>
-      </div>
+      <form onSubmit={(e) => { e.preventDefault(); handleChange(inputValue); }}>
+
+        <TextField
+          value={inputValue}
+          onChange={(e) => setInputValue(e.target.value)}
+          fullWidth id="fullWidth"
+          style={{maxWidth: '600px'}}
+        />
+      <IconButton color="primary" onClick={() => { handleChange(inputValue)}} aria-label="send message">
+        <SendRounded style={{maxWidth: '30px', maxHeight: '30px', minWidth: '30px', minHeight: '30px'}} />
+      </IconButton>
+      </form>
+    </div>
     </div>
     </div>
 	</Container>
