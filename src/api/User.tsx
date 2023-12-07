@@ -1,8 +1,36 @@
 import axios from "axios";
 import { getApiBaseUrl, getDefaultHeaders } from "../util/ContextFunctions";
-import { ApiResultBase, LoginResult } from "../types/ApiResults";
+import { ApiResultBase, LoginResult, RegisterResult } from "../types/ApiResults";
 
 
+export const RegisterUser = async (username: string, email: string, password: string): Promise<RegisterResult> => {
+    const url = getApiBaseUrl() + "/users";
+
+    try {
+        const response = await axios.post(url, { username, email, password });
+
+        if (response.data) {
+            console.log("RegisterUser success");
+            console.log(response.data);
+            return {
+                isSuccess: true,
+                id: response.data._id,
+            };
+        }
+
+        console.log("RegisterUser failed")
+        return {
+            isSuccess: false,
+            error: "Invalid response",
+        };
+    } catch (e) {
+        // handle error
+        console.log(e);
+        return {
+            isSuccess: false,
+        };
+    }
+};
 
 export const LoginUser = async (email: string, password: string): Promise<LoginResult> => {
     const url = getApiBaseUrl() + "/auth/login";

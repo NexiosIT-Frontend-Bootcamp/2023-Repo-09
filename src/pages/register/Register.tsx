@@ -10,117 +10,118 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { RegisterUser } from '../../api/User';
+import { useNavigate } from 'react-router-dom';
 
 
 const defaultTheme = createTheme();
 
 export default function Register() {
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-      username: data.get('username'),
-    });
-    
-    // POST request using fetch inside useEffect React hook
-    const requestOptions = {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-            username: data.get('username'),
+    const nav = useNavigate();
+
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        const data = new FormData(event.currentTarget);
+        console.log({
             email: data.get('email'),
             password: data.get('password'),
-        })
-    };
-    fetch('https://lobster-app-osqfh.ondigitalocean.app/users', requestOptions)
-        .then(response => response.json())
-        .then(response => console.log(response));
-  };
+            username: data.get('username'),
+        });
 
-  return (
+        // Call the POST function from the UserContext
+        const result = await RegisterUser(data.get('username') as string, data.get('email') as string, data.get('password') as string);
+
+        console.log(result);
+        if (result.isSuccess) {
+            // Redirect to login page
+            nav("/login");
+        } else {
+            console.log("registration error");
+        }
+    };
+
+    return (
     <ThemeProvider theme={defaultTheme}>
-      <Container component="main" maxWidth="xs">
+        <Container component="main" maxWidth="xs">
         <CssBaseline />
         <Box
-          sx={{
+            sx={{
             marginTop: 8,
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
-          }}
+            }}
         >
-          <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+            <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
             <LockOutlinedIcon />
-          </Avatar>
-          <Typography component="h1" variant="h5">
+            </Avatar>
+            <Typography component="h1" variant="h5">
             Sign up
-          </Typography>
-          <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
+            </Typography>
+            <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
             <Grid container spacing={2}>
-              <Grid item xs={12}>
+                <Grid item xs={12}>
                 <TextField
-                  autoComplete="given-name"
-                  name="username"
-                  required
-                  fullWidth
-                  id="username"
-                  label="Username"
-                  autoFocus
+                    autoComplete="given-name"
+                    name="username"
+                    required
+                    fullWidth
+                    id="username"
+                    label="Username"
+                    autoFocus
                 />
-              </Grid>
-              
-              <Grid item xs={12}>
+                </Grid>
+                
+                <Grid item xs={12}>
                 <TextField
-                  required
-                  fullWidth
-                  id="email"
-                  label="Email Address"
-                  name="email"
-                  autoComplete="email"
+                    required
+                    fullWidth
+                    id="email"
+                    label="Email Address"
+                    name="email"
+                    autoComplete="email"
                 />
-              </Grid>
-              <Grid item xs={12}>
+                </Grid>
+                <Grid item xs={12}>
                 <TextField
-                  required
-                  fullWidth
-                  name="password"
-                  label="Password"
-                  type="password"
-                  id="password"
-                  autoComplete="new-password"
+                    required
+                    fullWidth
+                    name="password"
+                    label="Password"
+                    type="password"
+                    id="password"
+                    autoComplete="new-password"
                 />
-              </Grid>
-              <Grid item xs={12}>
+                </Grid>
+                <Grid item xs={12}>
                 <TextField
-                  required
-                  fullWidth
-                  name="confirmPassword"
-                  label="Confirm password"
-                  type="password"
-                  id="confirmPassword"
+                    required
+                    fullWidth
+                    name="confirmPassword"
+                    label="Confirm password"
+                    type="password"
+                    id="confirmPassword"
                 />
-              </Grid>
+                </Grid>
             </Grid>
             <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
+                type="submit"
+                fullWidth
+                variant="contained"
+                sx={{ mt: 3, mb: 2 }}
             >
-              Sign Up
+                Sign Up
             </Button>
             <Grid container justifyContent="flex-end">
-              <Grid item>
+                <Grid item>
                 <Link href="/login" variant="body2">
-                  Already have an account? Sign in
+                    Already have an account? Sign in
                 </Link>
-              </Grid>
+                </Grid>
             </Grid>
-          </Box>
+            </Box>
         </Box>
-      </Container>
+        </Container>
     </ThemeProvider>
-  );
+    );
 }
