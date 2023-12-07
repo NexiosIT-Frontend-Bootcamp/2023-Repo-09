@@ -11,6 +11,7 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useUserContext } from '../../contexts/Context';
+import { useNavigate } from 'react-router-dom';
 
 const defaultTheme = createTheme();
 
@@ -18,7 +19,9 @@ export default function SignIn() {
 
   const { signIn } = useUserContext();
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const nav = useNavigate();
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     console.log({
@@ -27,8 +30,15 @@ export default function SignIn() {
     });
 
     // Call the signIn function from the UserContext
+    const result = await signIn(data.get('email') as string, data.get('password') as string);
 
-    signIn(data.get('email') as string, data.get('password') as string);
+    console.log(result);
+    if (result.isSuccess) {
+      // Redirect to home page
+      nav("/");
+    } else {
+      console.log("login error");
+    }
   };
 
   return (

@@ -1,7 +1,9 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 import { IUser } from '../types/IUser';
+import { GetUser, LoginUser } from "../api/User";
 
-import { LoginResult } from "./LoginResult";
+
+import { LoginResult } from "../types/ApiResults";
 
 export interface IUserContext {
     loading: boolean;
@@ -20,31 +22,54 @@ const UserContext = createContext<IUserContext | null>(null);
 
 export const UserContextProvider = ({ children }: IProviderProps) => {
     const [loading, setLoading] = useState<boolean>(true);
+    const [error, setError] = useState<string>();
     const [user, setUser] = useState<IUser | undefined>();
     const [jwt, setJwt] = useState<string>();
 
-    const signIn = async (email: string, password: string): Promise<LoginResult> => {
-        console.log("signIn");
-        // POST request for login
-        const requestOptions = {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                email: email,
-                password: password,
-            })
-        };
+    useEffect(() => {
+        // check if session storage contains token & user data on mount
+        const tokenStorage = sessionStorage.getItem("token");
+        const userStorage = sessionStorage.getItem("user");
+
+        if (tokenStorage !== null && userStorage !== null) {
+            setJwt(tokenStorage);
+            setUser(JSON.parse(userStorage));
+        }
+    }, []);
     
-        fetch('https://lobster-app-osqfh.ondigitalocean.app/auth/login', requestOptions)
-            .then(response => response.json())
-            .then(response => console.log(response));
-        return { success: true };
+    const signIn = async (email: string, password: string): Promise<LoginResult> => {
+        console.log("sign in");
+        setLoading(true);
+
+        const result = await LoginUser(email, password);
+        if (result.accessToken) {
+            const userResult = await GetUser(result.accessToken);
+
+            if (userResult.user) {
+                setJwt(result.accessToken);
+                setUser(userResult.user);
+
+                // Save to session
+                sessionStorage.setItem("token", result.accessToken);
+                sessionStorage.setItem("user", JSON.stringify(userResult.user));
+            }
+        }
+
+        setLoading(false);
+
+        return result;
     };
 
-    const signOut = async () => {
+    const signOut = () => {
+        setUser(undefined);
+        setJwt(undefined);
+
+        sessionStorage.clear();
     };
 
-    return <UserContext.Provider value={{ loading, signIn, signOut, user, jwt }}>{children}</UserContext.Provider>;
+    return (
+        <UserContext.Provider value={{ loading, signIn, signOut, error, user, jwt }}>{children}</UserContext.Provider>
+    );
 };
 
 // Create a custom hook to use the UserContext
