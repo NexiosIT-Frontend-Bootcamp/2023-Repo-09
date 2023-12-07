@@ -10,7 +10,7 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { useUserContext } from '../../contexts/Context';
+import { useUserContext } from '../../contexts/UserContext';
 import { useNavigate } from 'react-router-dom';
 
 const defaultTheme = createTheme();
