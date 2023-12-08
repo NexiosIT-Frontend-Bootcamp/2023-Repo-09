@@ -2,8 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { IUser } from '../../types/IUser';
 import { useUserContext } from '../../contexts/UserContext';
 import { GetUser } from '../../api/User';
-import { Container, IconButton, List, ListItem, TextField, ThemeProvider, Typography, createTheme } from '@mui/material';
+import { Container, IconButton, List, ListItem, ListItemButton, TextField, ThemeProvider, Typography, createTheme } from '@mui/material';
 import { SendRounded } from '@mui/icons-material';
+import { GetMessages } from '../../api/Message';
+import { GetChatrooms } from '../../api/Chatroom';
+import { ChatroomsResult, MessagesResult } from '../../types/ApiResults';
 
 const defaultTheme = createTheme();
 
@@ -15,29 +18,52 @@ const Home: React.FC = () => {
     const [usersLoading, setUsersLoading] = useState<boolean>();
     const [usersError, setUsersError] = useState<string>();
     const [inputValue, setInputValue] = useState<string>('');
+    const [messages, setMessages] = useState<MessagesResult[]>([]);
+    const [chatrooms, setChatrooms] = useState<ChatroomsResult[]>([]);
+    const [currentChatroom, setCurrentChatroom] = useState<string>();
 
-    useEffect(() => {
-		// const loadMessages
-			// await GetMessages
-        const getAllUsers = async () => {
-            if (!jwt) return [];
-        
-            setUsersError(undefined);
-            setUsersLoading(true);
+	useEffect(() => {
+		const loadMessages = async () => {
+			if (!jwt) return;
 
-            const allUsersResult = await GetUser(jwt);
+			const messagesResult = await GetMessages(jwt);
 
-            if (allUsersResult.isSuccess) {
-                setUsers(allUsersResult.users || []);
-            } else {
-                setUsersError(allUsersResult.error);
-            }
+			setMessages(messagesResult || []);
 
-            setUsersLoading(false);
-        };
+			console.log(messagesResult);
+		};
 
-        getAllUsers();
-    }, [jwt]);
+		const loadChatrooms = async () => {
+			if (!jwt) return;
+
+			const chatroomsResult = await GetChatrooms(jwt);
+
+			setChatrooms(chatroomsResult || []);
+
+			console.log(chatroomsResult);
+		};
+		
+		const getAllUsers = async () => {
+			if (!jwt) return [];
+		
+			setUsersError(undefined);
+			setUsersLoading(true);
+
+			const allUsersResult = await GetUser(jwt);
+
+			if (allUsersResult.isSuccess) {
+				setUsers(allUsersResult.users || []);
+			} else {
+				setUsersError(allUsersResult.error);
+			}
+
+			setUsersLoading(false);
+		};
+
+		getAllUsers();
+		loadChatrooms();
+		loadMessages();
+	}, [jwt]);
 
 	const [textboxes, setTextboxes] = useState<string[]>([]); // Initial state with an empty text box
 
@@ -57,10 +83,10 @@ const Home: React.FC = () => {
           Groups
         </Typography>
         <List>
-          {['test1', 'test2', 'test3'].map((group, index) => (
-            <ListItem button key={index}>
-              {group}
-            </ListItem>
+          {chatrooms.map((group, index) => (
+            <ListItemButton key={index} onClick={() => {setCurrentChatroom(group._id)}}>
+              {group.name}
+            </ListItemButton >
           ))}
         </List>
       </div>
@@ -68,9 +94,9 @@ const Home: React.FC = () => {
       {/* Main Content */}
       <div style={{ width: '600px', marginLeft: '0px', padding: '20px' }}>
         <div style={{ marginBottom: '10px', width: '300px' }}>
-          {textboxes.map((value, index) => (
+          {messages.filter((message) => message.chatroom === currentChatroom).map((value, index) => (
             <div key={index} style={{ border: '1px solid #ccc', padding: '10px', marginBottom: '10px', width: '600px' }}>
-              <Typography variant="body1">{value}</Typography>
+              <Typography variant="body1">{value.data}</Typography>
             </div>
           ))}
         </div>

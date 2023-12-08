@@ -14,3 +14,19 @@ export interface RegisterResult extends ApiResultBase {
     email?: string;
     id?: string;
 }
+
+// Get chatrooms API result
+export interface ChatroomsResult {
+    _id?: string;
+    name?: string;
+    allowedUsers?: string[];
+}
+
+// Get messages API result
+export interface MessagesResult {
+    _id?: string;
+    user?: string;
+    chatroom?: string;
+    data?: string;
+    published_at?: string;
+}
